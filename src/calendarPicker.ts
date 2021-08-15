@@ -25,6 +25,7 @@ export default class CalendarPicker {
                     // @ts-ignore 
                     app.workspace.activeLeaf.openFile(dnp)
                 },
+                disableMobile:  true
             }
         ); // flatpickr        
     }
