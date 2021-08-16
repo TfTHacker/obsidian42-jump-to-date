@@ -25,15 +25,19 @@ export class ConfirmationModal extends Modal {
         .createEl("button", { text: "Never mind" })
         .addEventListener("click", () => this.close());
 
-      buttonsEl
+      const btnSumbit = buttonsEl
         .createEl("button", {
+          attr: { type: 'submit' },
           cls: "mod-cta",
           text: cta,
         })
-        .addEventListener("click", async (e) => {
+        btnSumbit.addEventListener("click", async (e) => {
           await onAccept(e);
           this.close();
-        });
+        })
+        setTimeout(() => {
+          btnSumbit.focus();
+        }, 50);
     });
   }
 }

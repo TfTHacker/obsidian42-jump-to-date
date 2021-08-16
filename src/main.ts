@@ -1,7 +1,11 @@
-import { Plugin } from 'obsidian';
+import { Plugin, TFile } from 'obsidian';
 import { addIcons } from './icons';
 import { Settings, DEFAULT_SETTINGS, SettingsTab } from './settings';
-import CalendarPicker from './calendarPicker';
+import CalendarPicker from './ui/calendarPicker';
+import DatePickerModal from './ui/datenlpModal';
+import moment from 'moment';
+import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
+import { createConfirmationDialog } from './ui/confirmationModal';
 
 export default class ThePlugin extends Plugin {
 	settings: Settings;
@@ -21,12 +25,28 @@ export default class ThePlugin extends Plugin {
 			this.configureRibbonCommand();
 
 		this.addCommand({
-			id: 'open-JumpToDate-suggestor',
+			id: 'open-JumpToDate-calendar',
 			name: 'Date Picker',
 			callback: () => {
 				this.datePicker.open()
 			}
 		});
+
+		// give time for other plugins to load
+		setTimeout(() => {
+			//If the Natural Language Date plugin is installed, enable this additional command
+			// @ts-ignore
+			if(this.app.plugins.getPlugin("nldates-obsidian")) {
+				this.addCommand({
+					id: 'open-JumpToDate-nlp',
+					name: 'Natural Language Date',
+					callback: () => {
+						const dt = new DatePickerModal(this.app, this);
+						dt.open();
+					}
+				});	
+			}			
+		}, 3000); 
 
 		this.datePicker = new CalendarPicker(this);
 	}
@@ -45,6 +65,38 @@ export default class ThePlugin extends Plugin {
 
 	configureRibbonCommand() {
 		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump to Date', async () => this.datePicker.open())
+	}
+
+	setFirstDayofWeek(dayOfWeek: number) {
+		this.datePicker.setFirstDayofWeek(dayOfWeek);
+	}
+
+	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate: boolean =true ){
+		const dateForDNPToOpen = moment(dateStr);
+		let dnpFileThatExistsInVault: TFile = await getDailyNote(dateForDNPToOpen, getAllDailyNotes());
+		if (dnpFileThatExistsInVault != null) {
+			// @ts-ignore 
+			app.workspace.activeLeaf.openFile(dnpFileThatExistsInVault)
+		} else {
+			// @ts-ignore 
+			if (shouldConfirmBeforeCreate === true) {
+				createConfirmationDialog({
+					cta: "Create",
+					onAccept: async () => {
+						const newDNP = await createDailyNote(dateForDNPToOpen);
+						// @ts-ignore 
+						app.workspace.activeLeaf.openFile(newDNP)
+					},
+					text: `File ${dateStr} does not exist. Would you like to create it?`,
+					title: "New Daily Note",
+				});
+			} else {
+				const newDNP = await createDailyNote(dateForDNPToOpen);
+				// @ts-ignore 
+				app.workspace.activeLeaf.openFile(newDNP)
+			}
+		}
+
 	}
 
 }
