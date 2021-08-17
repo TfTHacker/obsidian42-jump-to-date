@@ -1,7 +1,8 @@
-import { App, Modal, Setting } from 'obsidian';
+import { App, Modal, Notice, Setting } from 'obsidian';
 import ThePlugin from 'src/main';
 
-export default class DatePickerModal extends Modal {
+
+export default class DateNLP_Modal extends Modal {
     plugin: ThePlugin;
 
     constructor(app: App, plugin: ThePlugin) {
@@ -11,7 +12,6 @@ export default class DatePickerModal extends Modal {
 
     onOpen(): void {
         let previewEl: HTMLElement;
-
         let dateInput = '';
 
         const getDateStr = () => {
@@ -25,13 +25,12 @@ export default class DatePickerModal extends Modal {
             return parsedDateString;
         };
 
-
         this.contentEl.createEl('form', {}, (formEl) => {
             const dateInputEl = new Setting(formEl)
                 .setName('Date of DNP to open')
                 .setDesc('')
                 .addText((textEl) => {
-                    textEl.setPlaceholder('Natural language Date');
+                    textEl.setPlaceholder('Natural Language Date');
                     textEl.onChange((value) => {
                         dateInput = value;
                         previewEl.setText(getDateStr());
@@ -40,7 +39,6 @@ export default class DatePickerModal extends Modal {
                     window.setTimeout(() => textEl.inputEl.focus(), 10);
                 });
             previewEl = dateInputEl.descEl;
-
 
             formEl.createDiv('modal-button-container', (buttonContainerEl) => {
                 buttonContainerEl
@@ -53,11 +51,11 @@ export default class DatePickerModal extends Modal {
                 });
             });
 
-            formEl.addEventListener('submit', (e: Event) => {
+            formEl.addEventListener('submit', async (e: Event) => {
                 e.preventDefault();
+                if (previewEl.getText() !== '') 
+                    await this.plugin.navigateToDNP(previewEl.getText().trim(), this.plugin.settings.shouldConfirmBeforeCreate);
                 this.close();
-                if (previewEl.getText() !== '')
-                    this.plugin.navigateToDNP(previewEl.getText());
             });
         });
 

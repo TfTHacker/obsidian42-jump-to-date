@@ -1,4 +1,3 @@
-import { TFile } from 'obsidian';
 import flatpickr from 'flatpickr';
 import ThePlugin from '../main';
 
@@ -14,6 +13,9 @@ export default class CalendarPicker {
         if (this.picker === undefined)
             this.initializePicker()
         this.picker.open();
+        // since the event of the date picker is called in differnt context, need to store a pointer to the function
+        // @ts-ignore
+        this.picker.shouldConfirmBeforeCreate = this.plugin.settings.shouldConfirmBeforeCreate;
     }
 
     initializePicker() {
@@ -28,10 +30,7 @@ export default class CalendarPicker {
                 disableMobile: true,
                 locale: { firstDayOfWeek: startingDayInWeek }
             }
-        );      
-        // since the event of the date picker is called in differnt context, need to store a pointer to the function
-        // @ts-ignore
-        this.picker.shouldConfirmBeforeCreate = this.plugin.settings.shouldConfirmBeforeCreate;
+        );
         // @ts-ignore
         this.picker.navigateToDNP = this.plugin.navigateToDNP;
     }

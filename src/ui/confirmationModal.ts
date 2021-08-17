@@ -1,24 +1,30 @@
 // class borrowed from Liam's great calendar project:
 // https://github.com/liamcain/obsidian-calendar-plugin
 
-import { App, Modal } from "obsidian";
+import { App, Modal, Notice } from "obsidian";
+import { createDailyNote } from 'obsidian-daily-notes-interface';
 
 interface IConfirmationDialogParams {
   cta: string;
   // eslint-disable-next-line
-  onAccept: (...args: any[]) => Promise<void>;
+  onAccept: (dateStr: string, ...args: any[]) => Promise<void>;
   text: string;
   title: string;
+  fileDate: string;
 }
 
 export class ConfirmationModal extends Modal {
   constructor(app: App, config: IConfirmationDialogParams) {
     super(app);
 
-    const { cta, onAccept, text, title } = config;
+    const { cta, onAccept, text, title, fileDate } = config;
 
     this.contentEl.createEl("h2", { text: title });
-    this.contentEl.createEl("p", { text });
+
+    // have to store the date somewhere since the eventing system was not passing in context on mobile.
+    let e: HTMLParagraphElement = this.contentEl.createEl("p", { text });
+    e.id = 'jumptodate-confirmdialog';
+    e.setAttr('fileDate', fileDate)
 
     this.contentEl.createDiv("modal-button-container", (buttonsEl) => {
       buttonsEl
@@ -31,13 +37,14 @@ export class ConfirmationModal extends Modal {
           cls: "mod-cta",
           text: cta,
         })
-        btnSumbit.addEventListener("click", async (e) => {
-          await onAccept(e);
-          this.close();
-        })
-        setTimeout(() => {
-          btnSumbit.focus();
-        }, 50);
+      btnSumbit.addEventListener("click", async (e) => {
+        let dateStr: string = document.getElementById('jumptodate-confirmdialog').getAttr('filedate').toString();
+        await onAccept(dateStr, e);
+        this.close();
+      })
+      setTimeout(() => {
+        btnSumbit.focus();
+      }, 50);
     });
   }
 }
@@ -47,6 +54,7 @@ export function createConfirmationDialog({
   onAccept,
   text,
   title,
+  fileDate
 }: IConfirmationDialogParams): void {
-  new ConfirmationModal(window.app, { cta, onAccept, text, title }).open();
+  new ConfirmationModal(window.app, { cta, onAccept, text, title, fileDate }).open();
 }
