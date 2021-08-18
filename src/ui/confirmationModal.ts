@@ -1,8 +1,7 @@
 // class borrowed from Liam's great calendar project:
 // https://github.com/liamcain/obsidian-calendar-plugin
 
-import { App, Modal, Notice } from "obsidian";
-import { createDailyNote } from 'obsidian-daily-notes-interface';
+import { App, Modal } from "obsidian";
 
 interface IConfirmationDialogParams {
   cta: string;
@@ -56,5 +55,6 @@ export function createConfirmationDialog({
   title,
   fileDate
 }: IConfirmationDialogParams): void {
+  // @ts-ignore
   new ConfirmationModal(window.app, { cta, onAccept, text, title, fileDate }).open();
 }

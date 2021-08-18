@@ -28,7 +28,7 @@ export default class CalendarPicker {
                     instance.navigateToDNP(dateStr, instance.shouldConfirmBeforeCreate);
                 },
                 disableMobile: true,
-                locale: { firstDayOfWeek: startingDayInWeek }
+                locale: { firstDayOfWeek: startingDayInWeek },
             }
         );
         // @ts-ignore
