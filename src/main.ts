@@ -6,6 +6,7 @@ import DateNLP_Modal from './ui/datenlpModal';
 import moment from 'moment';
 import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
 import { createConfirmationDialog } from './ui/confirmationModal';
+import { setInterval } from 'timers';
 
 export default class ThePlugin extends Plugin {
 	settings: Settings;
@@ -32,6 +33,8 @@ export default class ThePlugin extends Plugin {
 			}
 		});
 
+		setInterval
+
 		// give time for other plugins to load
 		setTimeout(() => {
 			//If the Natural Language Date plugin is installed, enable this additional command
@@ -46,7 +49,7 @@ export default class ThePlugin extends Plugin {
 					}
 				});
 			}
-		}, 3000);
+		}, 5000);
 
 		this.datePicker = new CalendarPicker(this);
 	}
@@ -71,32 +74,37 @@ export default class ThePlugin extends Plugin {
 		this.datePicker.setFirstDayofWeek(dayOfWeek);
 	}
 
-	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate: boolean = true) {
+	async navigateToDNP( dateStr: string, shouldConfirmBeforeCreate: boolean = true, newPane:  boolean = false) {
+		
+		const openFile = ( fileToOpen: TFile, openInNewPane: boolean )=> {
+			if (openInNewPane)  {
+				// @ts-ignore
+				const newLeaf = app.workspace.splitActiveLeaf(); 
+				newLeaf.openFile(fileToOpen, {active: true});
+			} else {				
+				// @ts-ignore
+				app.workspace.activeLeaf.openFile(fileToOpen)
+			}
+		}
+		
 		const dateForDNPToOpen = moment(dateStr);
 
 		let dnpFileThatExistsInVault: TFile = await getDailyNote(dateForDNPToOpen, getAllDailyNotes());
-		if (dnpFileThatExistsInVault != null) {
-			// @ts-ignore
-			app.workspace.activeLeaf.openFile(dnpFileThatExistsInVault)
+		if (dnpFileThatExistsInVault != null) {	
+			openFile( dnpFileThatExistsInVault, newPane );
 		} else {
-			// @ts-ignore 
 			if (shouldConfirmBeforeCreate === true) {
 				createConfirmationDialog({
 					cta: "Create",
 					onAccept: async (dateStr, e) => {
-						const newDNP = await createDailyNote(moment(dateStr));
-						// @ts-ignore
-						app.workspace.activeLeaf.openFile(newDNP)
-
+						openFile( await createDailyNote(moment(dateStr)), newPane )
 					},
 					text: `File ${dateStr} does not exist. Would you like to create it?`,
 					title: "New Daily Note",
 					fileDate: dateStr
 				});
 			} else {
-				const newDNP = await createDailyNote(dateForDNPToOpen);
-				// @ts-ignore
-				app.workspace.activeLeaf.openFile(newDNP)
+				openFile( await createDailyNote(dateForDNPToOpen), newPane );
 			}
 		}
 	}
