@@ -6,7 +6,6 @@ import DateNLP_Modal from './ui/datenlpModal';
 import moment from 'moment';
 import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
 import { createConfirmationDialog } from './ui/confirmationModal';
-import { setInterval } from 'timers';
 
 export default class ThePlugin extends Plugin {
 	settings: Settings;

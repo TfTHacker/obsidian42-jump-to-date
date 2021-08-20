@@ -1,7 +1,8 @@
 import flatpickr from 'flatpickr';
 import ThePlugin from '../main';
-import { App } from 'obsidian';
+import { App, View } from 'obsidian';
 import moment from 'moment';
+import { getDailyNoteSettings } from 'obsidian-daily-notes-interface';
 
 export default class CalendarPicker {
     plugin: ThePlugin;
@@ -29,6 +30,16 @@ export default class CalendarPicker {
 
     initializePicker() {
         const startingDayInWeek = this.plugin.settings.firstDayOfWeekIsSunday ? 0 : 1;
+        let currentlySelectedDate: moment.Moment = moment();
+        const activeView: View = this.plugin.app.workspace.activeLeaf.view;
+        try {
+            // @ts-ignore
+            if( activeView.file && moment( activeView.file.basename, getDailyNoteSettings().format, true ).isValid() ) {
+                // @ts-ignore
+                currentlySelectedDate = moment( activeView.file.basename );
+            }
+        } catch(e) {}
+
         this.picker = flatpickr(
             document.querySelector("div[aria-label='Jump to Date']"),
             {
@@ -40,8 +51,10 @@ export default class CalendarPicker {
                 },
                 disableMobile: true,
                 locale: { firstDayOfWeek: startingDayInWeek },
+                defaultDate: currentlySelectedDate.format('Y-M-D')
             }
         );
+
         this.picker.daysContainer.addEventListener('click', (e: MouseEvent)=>{
             // @ts-ignores
             this.picker.controlKeyPressed = ( e.ctrlKey || e.metaKey ) ? true : false;

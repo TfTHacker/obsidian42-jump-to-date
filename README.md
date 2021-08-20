@@ -1,8 +1,27 @@
 # Jump To Date Plugin for Obsidian
-Quickly navigate to a Daily Notes Page using a popup calendar from  the ribbon.
+Quickly navigate to a Daily Notes Page using a popup calendar from  the ribbon or natural language dates
 
-![Feature Preview](FeaturePreview.gif)
+# From the Ribbon
+Click the button to see the popup calendar.
 
+![Feature Preview](FeaturePreview-ribbon.gif)
 
-## Command Palette option
-There is a command palette command for also accessing this feature view the keyboard. 
+# Using Natural Language Dates
+From the command palette, invoke the Natural Language Date feature. Then using text to describe your date. For example:
+- Today
+- Tomorrow
+- Next Friday
+- May 5
+
+**Note:** This feature requires that the Natural Language Dates Plugin is installed. 
+
+![Feature Preview](FeaturePreview-cp.gif)
+
+# Other Features
+- Hold down the control key when clicking on a date in the calendar popup to open it in a new pane
+- Right mouse click a date in the popup calendar to open the date in a new pane
+
+## Special thanks
+- Thank you to Liam Cain for the use of his [obsidian-daily-notes-interface](https://github.com/liamcain/obsidian-daily-notes-interface) library for dealing with Daily Notes Page files
+- Thank you to Argentina Ortega Sáinz for the [nldates-obsidian](https://github.com/argenos/nldates-obsidian) library, which assists with parsing Natural Language Dates
+

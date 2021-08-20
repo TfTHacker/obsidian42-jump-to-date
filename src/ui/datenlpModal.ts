@@ -1,4 +1,4 @@
-import { App, Modal, Notice, Setting } from 'obsidian';
+import { App, Modal, Setting } from 'obsidian';
 import ThePlugin from 'src/main';
 
 
