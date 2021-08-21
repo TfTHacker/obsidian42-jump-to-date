@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting, ToggleComponent } from 'obsidian';
-import ThePlugin from './main';
-import JumpToDatePlugin from './main';
+import ThePlugin from '../main';
+import JumpToDatePlugin from '../main';
 
 export interface Settings {
 	enableRibbon: boolean,
@@ -60,11 +60,6 @@ export class SettingsTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.firstDayOfWeekIsSunday);
 				cb.onChange(async (value: boolean) => {
 					this.plugin.settings.firstDayOfWeekIsSunday = value;
-					await this.plugin.saveSettings();
-					if (value === true)
-						this.plugin.setFirstDayofWeek(0);
-					else
-						this.plugin.setFirstDayofWeek(1);
 				});
 			});
 

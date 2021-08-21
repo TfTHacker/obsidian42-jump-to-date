@@ -19,6 +19,8 @@ export default class DateNLP_Modal extends Modal {
     onOpen(): void {
         let previewEl: HTMLElement;
         let dateInput = '';
+        let ctrlKey: boolean = false;
+        let shiftKey: boolean = false;
 
         const getDateStr = () => {
             let cleanDateInput = dateInput;
@@ -41,10 +43,13 @@ export default class DateNLP_Modal extends Modal {
                         dateInput = value;
                         previewEl.setText(getDateStr());
                     });
-                    textEl.inputEl.addEventListener('keyup', async (e:KeyboardEvent)=>{
-                        e.preventDefault();
-                        if(e.ctrlKey  && previewEl.getText() !== '')
-                            await this.submitForm( previewEl.getText().trim(), e.ctrlKey, e.shiftKey );
+                    textEl.inputEl.addEventListener('keydown', async (e:KeyboardEvent)=>{
+                        ctrlKey = ( e.ctrlKey || e.metaKey ) ? true : false;
+                        shiftKey = e.shiftKey;
+                        if(ctrlKey && e.key === 'Enter' && previewEl.getText().trim() !== '') {
+                            e.preventDefault();
+                            await this.submitForm( previewEl.getText().trim(), ctrlKey, shiftKey );
+                        }
                     });
                     window.setTimeout(() => textEl.inputEl.focus(), 10);
                 });
@@ -61,10 +66,11 @@ export default class DateNLP_Modal extends Modal {
                 });
             });
 
+            // invoked when button is clicked. 
             formEl.addEventListener('submit', async (e: Event) => {
                 e.preventDefault();
                 if (previewEl.getText() !== '')
-                    await this.submitForm( previewEl.getText().trim(), false, false );
+                    await this.submitForm( previewEl.getText().trim(), ctrlKey, shiftKey );
             });
         });
 

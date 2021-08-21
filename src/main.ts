@@ -1,6 +1,6 @@
 import { Plugin, TFile, Notice, App } from 'obsidian';
 import { addIcons } from './icons';
-import { Settings, DEFAULT_SETTINGS, SettingsTab } from './settings';
+import { Settings, DEFAULT_SETTINGS, SettingsTab } from './ui/settings';
 import CalendarPicker from './ui/calendarPicker';
 import DateNLP_Modal from './ui/datenlpModal';
 import moment from 'moment';
@@ -74,7 +74,7 @@ export default class ThePlugin extends Plugin {
 	}
 
 	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate: boolean = true, newPane: boolean = false, newHorizontalPane: boolean = false) {
-
+		console.log('navigate', newPane, newHorizontalPane)
 		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {	
 			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
@@ -90,9 +90,10 @@ export default class ThePlugin extends Plugin {
 			}
 		}
 
-		const dateForDNPToOpen = moment(dateStr);
+		const dateForDNPToOpen = moment(new Date(dateStr));
 
-		let dnpFileThatExistsInVault: TFile = await getDailyNote(dateForDNPToOpen, getAllDailyNotes());
+		let dnpFileThatExistsInVault = getDailyNote(dateForDNPToOpen, getAllDailyNotes());	 
+		
 		if (dnpFileThatExistsInVault != null) {
 			openFile(dnpFileThatExistsInVault, newPane, newHorizontalPane);
 		} else {
@@ -100,11 +101,12 @@ export default class ThePlugin extends Plugin {
 				createConfirmationDialog({
 					cta: "Create",
 					onAccept: async (dateStr, e) => {
-						openFile(await createDailyNote(moment(dateStr)), newPane, newHorizontalPane)
+						const newDate = moment( new Date(dateStr) );
+						openFile(await createDailyNote(newDate), newPane, newHorizontalPane);
 					},
 					text: `File ${dateStr} does not exist. Would you like to create it?`,
 					title: "New Daily Note",
-					fileDate: dateStr
+					fileDate: dateForDNPToOpen.format('Y-MM-DD')
 				});
 			} else {
 				openFile(await createDailyNote(dateForDNPToOpen), newPane, newHorizontalPane);

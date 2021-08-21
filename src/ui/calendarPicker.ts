@@ -37,15 +37,15 @@ export default class CalendarPicker {
                 currentlySelectedDate = moment(activeView.file.basename);
             }
         } catch (e) { }
-        this.picker.setDate(currentlySelectedDate.format('Y-M-D'));
+        this.picker.setDate(currentlySelectedDate.format('Y-MM-D'));
 
         this.picker.open();
 
-        // Next 3 lines of code set focus and prepare control to be navigated by keybaord. Requires simulating one Arrow key press to make it active
+        // Next few lines of code set focus and prepare control to be navigated by keybaord. Requires simulating one Arrow key press to make it active
         const daySelected: HTMLElement = document.querySelector('.obsidian42-jump-to-date .flatpickr-day.selected');
         daySelected.focus();
         daySelected.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'ArrowRight' }));
-
+        daySelected.focus();
     }
 
     initializePicker() {
@@ -58,7 +58,7 @@ export default class CalendarPicker {
             {
                 onChange: async function (selectedDates, dateStr, instance) {
                     // @ts-ignore
-                    instance.navigateToDNP(dateStr, instance.shouldConfirmBeforeCreate, instance.controlKeyPressed, instance.shiftKeyPressed);
+                    await instance.navigateToDNP(dateStr, instance.shouldConfirmBeforeCreate, instance.controlKeyPressed, instance.shiftKeyPressed);
                     instance.destroy();
                 },
                 disableMobile: true,
@@ -68,19 +68,6 @@ export default class CalendarPicker {
 
         this.picker.calendarContainer.addClass('obsidian42-jump-to-date');
 
-        this.picker.daysContainer.addEventListener('keyup', (e: KeyboardEvent) => {
-            if ((e.ctrlKey === true || e.metaKey === true) && e.key === "Enter") {
-                // @ts-ignore
-                this.picker.navigateToDNP(e.target.dateObj.toString(), this.picker.shouldConfirmBeforeCreate, true);
-                this.picker.destroy();
-                this.picker = null;
-            } else if (e.key === "Enter") {
-                // @ts-ignore
-                this.picker.navigateToDNP(e.target.dateObj.toString(), this.picker.shouldConfirmBeforeCreate, false);
-            }
-
-        });
-
         this.picker.calendarContainer.addEventListener('keydown', (e: KeyboardEvent) => {
             // @ts-ignores
             this.picker.controlKeyPressed = (e.ctrlKey || e.metaKey) ? true : false;
@@ -88,6 +75,18 @@ export default class CalendarPicker {
             this.picker.shiftKeyPressed = e.shiftKey;
         });
 
+        this.picker.calendarContainer.addEventListener('keyup', (e: KeyboardEvent) => {
+            console.log('keydown', e.key, (e.ctrlKey || e.metaKey), e.shiftKey)
+            if (e.key === "Enter") {
+                console.log('enter')
+                // @ts-ignore
+                const newDate = moment( new Date(e.target.dateObj) ).format('Y-MM-D');
+                // @ts-ignore
+                this.picker.navigateToDNP(newDate, this.picker.shouldConfirmBeforeCreate, (e.ctrlKey || e.metaKey), e.shiftKey );
+                this.picker.destroy();
+                this.picker = null;
+            }
+        });
 
         this.picker.daysContainer.addEventListener('click', (e: MouseEvent) => {
             // @ts-ignores
@@ -98,7 +97,9 @@ export default class CalendarPicker {
 
         this.picker.daysContainer.addEventListener('contextmenu', (e: MouseEvent) => {
             // @ts-ignore
-            this.picker.navigateToDNP(e.target.dateObj.toString(), this.picker.shouldConfirmBeforeCreate, true, this.picker.shiftKeyPressed);
+            const newDate = moment( new Date(e.target.dateObj) ).format('Y-MM-D');
+            // @ts-ignore
+            this.picker.navigateToDNP(newDate, this.picker.shouldConfirmBeforeCreate, true, this.picker.shiftKeyPressed);
             this.picker.destroy();
         });
 
