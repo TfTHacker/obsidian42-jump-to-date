@@ -1,4 +1,4 @@
-import { Plugin, TFile, Notice } from 'obsidian';
+import { Plugin, TFile, Notice, App } from 'obsidian';
 import { addIcons } from './icons';
 import { Settings, DEFAULT_SETTINGS, SettingsTab } from './settings';
 import CalendarPicker from './ui/calendarPicker';
@@ -73,14 +73,18 @@ export default class ThePlugin extends Plugin {
 		this.datePicker.setFirstDayofWeek(dayOfWeek);
 	}
 
-	async navigateToDNP( dateStr: string, shouldConfirmBeforeCreate: boolean = true, newPane:  boolean = false) {
-		
-		const openFile = ( fileToOpen: TFile, openInNewPane: boolean )=> {
-			if (openInNewPane)  {
+	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate: boolean = true, newPane: boolean = false, newHorizontalPane: boolean = false) {
+
+		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {	
+			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.splitActiveLeaf(); 
-				newLeaf.openFile(fileToOpen, {active: true});
-			} else {				
+				const newLeaf = app.workspace.createLeafBySplit(app.workspace.activeLeaf, 'horizontal', false);
+				newLeaf.openFile(fileToOpen, { active: true });
+			} else if (openInNewPane) {
+				// @ts-ignore
+				const newLeaf = app.workspace.createLeafBySplit(app.workspace.activeLeaf, 'vertical', false);
+				newLeaf.openFile(fileToOpen, { active: true });
+			} else {
 				// @ts-ignore
 				app.workspace.activeLeaf.openFile(fileToOpen)
 			}
@@ -89,21 +93,21 @@ export default class ThePlugin extends Plugin {
 		const dateForDNPToOpen = moment(dateStr);
 
 		let dnpFileThatExistsInVault: TFile = await getDailyNote(dateForDNPToOpen, getAllDailyNotes());
-		if (dnpFileThatExistsInVault != null) {	
-			openFile( dnpFileThatExistsInVault, newPane );
+		if (dnpFileThatExistsInVault != null) {
+			openFile(dnpFileThatExistsInVault, newPane, newHorizontalPane);
 		} else {
 			if (shouldConfirmBeforeCreate === true) {
 				createConfirmationDialog({
 					cta: "Create",
 					onAccept: async (dateStr, e) => {
-						openFile( await createDailyNote(moment(dateStr)), newPane )
+						openFile(await createDailyNote(moment(dateStr)), newPane, newHorizontalPane)
 					},
 					text: `File ${dateStr} does not exist. Would you like to create it?`,
 					title: "New Daily Note",
 					fileDate: dateStr
 				});
 			} else {
-				openFile( await createDailyNote(dateForDNPToOpen), newPane );
+				openFile(await createDailyNote(dateForDNPToOpen), newPane, newHorizontalPane);
 			}
 		}
 	}

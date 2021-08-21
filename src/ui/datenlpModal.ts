@@ -1,3 +1,4 @@
+import { Console } from 'console';
 import { App, Modal, Setting } from 'obsidian';
 import ThePlugin from 'src/main';
 
@@ -8,6 +9,11 @@ export default class DateNLP_Modal extends Modal {
     constructor(app: App, plugin: ThePlugin) {
         super(app);
         this.plugin = plugin;
+    }
+
+    async submitForm( dateStr: string, ctrlKey: boolean, shiftKey: boolean ) {
+        await this.plugin.navigateToDNP( dateStr, this.plugin.settings.shouldConfirmBeforeCreate, ctrlKey, shiftKey );
+        this.close();
     }
 
     onOpen(): void {
@@ -35,7 +41,11 @@ export default class DateNLP_Modal extends Modal {
                         dateInput = value;
                         previewEl.setText(getDateStr());
                     });
-
+                    textEl.inputEl.addEventListener('keyup', async (e:KeyboardEvent)=>{
+                        e.preventDefault();
+                        if(e.ctrlKey  && previewEl.getText() !== '')
+                            await this.submitForm( previewEl.getText().trim(), e.ctrlKey, e.shiftKey );
+                    });
                     window.setTimeout(() => textEl.inputEl.focus(), 10);
                 });
             previewEl = dateInputEl.descEl;
@@ -53,11 +63,11 @@ export default class DateNLP_Modal extends Modal {
 
             formEl.addEventListener('submit', async (e: Event) => {
                 e.preventDefault();
-                if (previewEl.getText() !== '') 
-                    await this.plugin.navigateToDNP(previewEl.getText().trim(), this.plugin.settings.shouldConfirmBeforeCreate);
-                this.close();
+                if (previewEl.getText() !== '')
+                    await this.submitForm( previewEl.getText().trim(), false, false );
             });
         });
+
 
 
     }

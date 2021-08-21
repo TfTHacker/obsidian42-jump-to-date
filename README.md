@@ -19,6 +19,7 @@ From the command palette, invoke the Natural Language Date feature. Then using t
 
 # Other Features
 - Hold down the control key when clicking on a date in the calendar popup to open it in a new pane
+- Hold down control and shift to open in a new horizontal pane
 - Right mouse click a date in the popup calendar to open the date in a new pane
 
 ## Special thanks
