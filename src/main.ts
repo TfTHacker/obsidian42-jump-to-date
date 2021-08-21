@@ -85,7 +85,7 @@ export default class ThePlugin extends Plugin {
 				app.workspace.activeLeaf.openFile(fileToOpen)
 			}
 		}
-		
+
 		const dateForDNPToOpen = moment(dateStr);
 
 		let dnpFileThatExistsInVault: TFile = await getDailyNote(dateForDNPToOpen, getAllDailyNotes());
