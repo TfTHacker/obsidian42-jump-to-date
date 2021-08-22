@@ -54,7 +54,7 @@ export default class CalendarPicker {
         // create and initialize settings in the calendar picker
         if (this.picker !== null) this.picker.destroy()
         this.picker = flatpickr(
-            document.querySelector("div[aria-label='Jump to Date']"),
+            document.querySelector('div[aria-label="Jump-to-Date"]'),
             {
                 onChange: async function (selectedDates, dateStr, instance) {
                     // @ts-ignore
@@ -70,19 +70,17 @@ export default class CalendarPicker {
 
         this.picker.calendarContainer.addEventListener('keydown', (e: KeyboardEvent) => {
             // @ts-ignores
-            this.picker.controlKeyPressed = (e.ctrlKey || e.metaKey) ? true : false;
+            this.picker.controlKeyPressed = (e.ctrlKey || e.metaKey);
             // @ts-ignore
             this.picker.shiftKeyPressed = e.shiftKey;
         });
 
         this.picker.calendarContainer.addEventListener('keyup', (e: KeyboardEvent) => {
-            console.log('keydown', e.key, (e.ctrlKey || e.metaKey), e.shiftKey)
-            if (e.key === "Enter") {
-                console.log('enter')
+            if (e.key === 'Enter') {
                 // @ts-ignore
-                const newDate = moment( new Date(e.target.dateObj) ).format('Y-MM-D');
+                const newDate = moment(new Date(e.target.dateObj)).format('Y-MM-D');
                 // @ts-ignore
-                this.picker.navigateToDNP(newDate, this.picker.shouldConfirmBeforeCreate, (e.ctrlKey || e.metaKey), e.shiftKey );
+                this.picker.navigateToDNP(newDate, this.picker.shouldConfirmBeforeCreate, (e.ctrlKey || e.metaKey), e.shiftKey);
                 this.picker.destroy();
                 this.picker = null;
             }
@@ -90,14 +88,14 @@ export default class CalendarPicker {
 
         this.picker.daysContainer.addEventListener('click', (e: MouseEvent) => {
             // @ts-ignores
-            this.picker.controlKeyPressed = (e.ctrlKey || e.metaKey) ? true : false;
+            this.picker.controlKeyPressed = (e.ctrlKey || e.metaKey);
             // @ts-ignore
             this.picker.shiftKeyPressed = e.shiftKey;
         });
 
         this.picker.daysContainer.addEventListener('contextmenu', (e: MouseEvent) => {
             // @ts-ignore
-            const newDate = moment( new Date(e.target.dateObj) ).format('Y-MM-D');
+            const newDate = moment(new Date(e.target.dateObj)).format('Y-MM-D');
             // @ts-ignore
             this.picker.navigateToDNP(newDate, this.picker.shouldConfirmBeforeCreate, true, this.picker.shiftKeyPressed);
             this.picker.destroy();

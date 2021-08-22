@@ -1,7 +1,7 @@
 {
   "name": "obsidian-jump-to-date-plugin",
   "version": "1.0.0",
-  "description": "Obsidian42 - Jump to Date.",
+  "description": "Obsidian42 - Jump-to-Date.",
   "main": "main.js",
   "scripts": {
     "dev": "esbuild src/main.ts --bundle --external:obsidian --format=cjs --outfile=build/main.js --watch",

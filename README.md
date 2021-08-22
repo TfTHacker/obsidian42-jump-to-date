@@ -1,8 +1,8 @@
 # Jump To Date Plugin for Obsidian
-Quickly navigate to a Daily Notes Page using a popup calendar from  the ribbon or natural language dates
+Quickly navigate to a Daily Notes Page using a popup calendar from  the ribbon or with a form that you type in a natural language date expression.
 
 # From the Ribbon
-Click the button to see the popup calendar.
+Click the button in the ribbon to see the popup calendar. In the calendar, click on a date open the Daily Notes Page for that date.
 
 ![Feature Preview](FeaturePreview-ribbon.gif)
 

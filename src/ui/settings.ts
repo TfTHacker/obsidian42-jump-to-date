@@ -25,10 +25,10 @@ export class SettingsTab extends PluginSettingTab {
 	display(): void {
 		let { containerEl } = this;
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Obsidian42 - Jump to Date Setting' });
+		containerEl.createEl('h2', { text: 'Obsidian42 - Jump-to-Date Setting' });
 		new Setting(containerEl)
 			.setName('Enable Ribbon Support')
-			.setDesc('Toggle on and off the Jumpt to Date button in the ribbon.')
+			.setDesc('Toggle on and off the Jump-to- Date button in the ribbon.')
 			.addToggle((cb: ToggleComponent) => {
 				cb.setValue(this.plugin.settings.enableRibbon);
 				cb.onChange(async (value: boolean) => {
@@ -37,14 +37,13 @@ export class SettingsTab extends PluginSettingTab {
 						this.plugin.ribbonIcon.remove();
 					else
 						this.plugin.configureRibbonCommand();
-
 					await this.plugin.saveSettings();
 				});
 			});
 
 		new Setting(containerEl)
-			.setName("Confirm before creating new note")
-			.setDesc("Show a confirmation modal before creating a new note")
+			.setName('Confirm before creating new note')
+			.setDesc('Show a confirmation modal before creating a new note.')
 			.addToggle((cb: ToggleComponent) => {
 				cb.setValue(this.plugin.settings.shouldConfirmBeforeCreate);
 				cb.onChange(async (value: boolean) => {
@@ -54,8 +53,8 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("First day of the week on calendar is Sunday")
-			.setDesc("If toggled on the calendar will show the week starting with Sunday. If toggled off, it will show Monday as the starting day.")
+			.setName('First day of the week on calendar is Sunday')
+			.setDesc('If toggled on the calendar will show the week starting with Sunday. If toggled off, it will show Monday as the starting day.')
 			.addToggle((cb: ToggleComponent) => {
 				cb.setValue(this.plugin.settings.firstDayOfWeekIsSunday);
 				cb.onChange(async (value: boolean) => {

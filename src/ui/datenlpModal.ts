@@ -1,4 +1,3 @@
-import { Console } from 'console';
 import { App, Modal, Setting } from 'obsidian';
 import ThePlugin from 'src/main';
 
@@ -11,8 +10,8 @@ export default class DateNLP_Modal extends Modal {
         this.plugin = plugin;
     }
 
-    async submitForm( dateStr: string, ctrlKey: boolean, shiftKey: boolean ) {
-        await this.plugin.navigateToDNP( dateStr, this.plugin.settings.shouldConfirmBeforeCreate, ctrlKey, shiftKey );
+    async submitForm(dateStr: string, ctrlKey: boolean, shiftKey: boolean) {
+        await this.plugin.navigateToDNP(dateStr, this.plugin.settings.shouldConfirmBeforeCreate, ctrlKey, shiftKey);
         this.close();
     }
 
@@ -25,7 +24,7 @@ export default class DateNLP_Modal extends Modal {
         const getDateStr = () => {
             let cleanDateInput = dateInput;
             // @ts-ignore
-            const parsedDate = this.app.plugins.getPlugin("nldates-obsidian").parseDate(dateInput)
+            const parsedDate = this.app.plugins.getPlugin('nldates-obsidian').parseDate(dateInput)
             let parsedDateString = parsedDate.formattedString === 'Invalid date'
                 ? ''
                 : parsedDate.formattedString.replace('[[', '').replace(']]', '');
@@ -43,12 +42,12 @@ export default class DateNLP_Modal extends Modal {
                         dateInput = value;
                         previewEl.setText(getDateStr());
                     });
-                    textEl.inputEl.addEventListener('keydown', async (e:KeyboardEvent)=>{
-                        ctrlKey = ( e.ctrlKey || e.metaKey ) ? true : false;
+                    textEl.inputEl.addEventListener('keydown', async (e: KeyboardEvent) => {
+                        ctrlKey = (e.ctrlKey || e.metaKey);
                         shiftKey = e.shiftKey;
-                        if(ctrlKey && e.key === 'Enter' && previewEl.getText().trim() !== '') {
+                        if (ctrlKey && e.key === 'Enter' && previewEl.getText().trim() !== ' ') {
                             e.preventDefault();
-                            await this.submitForm( previewEl.getText().trim(), ctrlKey, shiftKey );
+                            await this.submitForm(previewEl.getText().trim(), ctrlKey, shiftKey);
                         }
                     });
                     window.setTimeout(() => textEl.inputEl.focus(), 10);
@@ -70,7 +69,7 @@ export default class DateNLP_Modal extends Modal {
             formEl.addEventListener('submit', async (e: Event) => {
                 e.preventDefault();
                 if (previewEl.getText() !== '')
-                    await this.submitForm( previewEl.getText().trim(), ctrlKey, shiftKey );
+                    await this.submitForm(previewEl.getText().trim(), ctrlKey, shiftKey);
             });
         });
 
