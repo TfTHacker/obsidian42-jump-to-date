@@ -83,6 +83,11 @@ export default class CalendarPicker {
                 this.picker.navigateToDNP(newDate, this.picker.shouldConfirmBeforeCreate, (e.ctrlKey || e.metaKey), e.shiftKey);
                 this.picker.destroy();
                 this.picker = null;
+            } else {
+                // @ts-ignores
+                this.picker.controlKeyPressed = (e.ctrlKey || e.metaKey);
+                // @ts-ignore
+                this.picker.shiftKeyPressed = e.shiftKey;
             }
         });
 
