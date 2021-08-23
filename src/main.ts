@@ -28,7 +28,9 @@ export default class ThePlugin extends Plugin {
 			id: 'open-JumpToDate-calendar',
 			name: 'Date Picker',
 			callback: () => {
-				this.datePicker.open();
+				setTimeout(	()=>{
+					this.datePicker.open(); //need small delay when called from command palette
+				}, 250);
 			}
 		});
 
@@ -87,7 +89,7 @@ export default class ThePlugin extends Plugin {
 			}
 		}
 
-		const dateForDNPToOpen = moment(new Date(dateStr));
+		const dateForDNPToOpen = moment(new Date(dateStr + 'T00:00:00'));
 
 		let dnpFileThatExistsInVault = getDailyNote(dateForDNPToOpen, getAllDailyNotes());
 
@@ -103,7 +105,7 @@ export default class ThePlugin extends Plugin {
 					},
 					text: `File ${dateStr} does not exist. Would you like to create it?`,
 					title: "New Daily Note",
-					fileDate: dateForDNPToOpen.format('Y-MM-DD')
+					fileDate: dateForDNPToOpen.format('Y-MM-DD') + 'T00:00:00'
 				});
 			} else {
 				openFile(await createDailyNote(dateForDNPToOpen), newPane, newHorizontalPane);
