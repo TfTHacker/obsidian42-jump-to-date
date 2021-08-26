@@ -1,6 +1,6 @@
 {
   "name": "obsidian-jump-to-date-plugin",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Obsidian42 - Jump-to-Date.",
   "main": "main.js",
   "scripts": {
