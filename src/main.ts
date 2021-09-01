@@ -1,6 +1,5 @@
 import { Plugin, TFile } from 'obsidian';
 import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
-import moment from 'moment';
 import { addIcons } from './icons';
 import { Settings, DEFAULT_SETTINGS, SettingsTab } from './ui/settings';
 import CalendarPicker from './ui/calendarPicker';
@@ -34,9 +33,10 @@ export default class ThePlugin extends Plugin {
 			}
 		});
 
-		// give time for other plugins to load
-		setTimeout(() => {
-			//If the Natural Language Date plugin is installed, enable this additional command
+
+		this.app.workspace.onLayoutReady(()=>{
+			// If the Natural Language Date plugin is installed, enable this additional command
+			// otherwise the command is not available
 			// @ts-ignore
 			if (this.app.plugins.getPlugin('nldates-obsidian')) {
 				this.addCommand({
@@ -48,7 +48,7 @@ export default class ThePlugin extends Plugin {
 					}
 				});
 			}
-		}, 5000);
+		})
 
 		this.datePicker = new CalendarPicker(this);
 	}
@@ -77,15 +77,15 @@ export default class ThePlugin extends Plugin {
 		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {
 			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.createLeafBySplit(app.workspace.activeLeaf, 'horizontal', false);
+				const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'horizontal', false);
 				newLeaf.openFile(fileToOpen, { active: true });
 			} else if (openInNewPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.createLeafBySplit(app.workspace.activeLeaf, 'vertical', false);
+				const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'vertical', false);
 				newLeaf.openFile(fileToOpen, { active: true });
 			} else {
 				// @ts-ignore
-				app.workspace.activeLeaf.openFile(fileToOpen);
+				app.workspace.getLeaf().openFile(fileToOpen);
 			}
 		}
 

@@ -1,7 +1,6 @@
 import flatpickr from 'flatpickr';
 import ThePlugin from '../main';
 import { View } from 'obsidian';
-import moment from 'moment';
 import { getDailyNoteSettings } from 'obsidian-daily-notes-interface';
 
 export default class CalendarPicker {
@@ -29,7 +28,7 @@ export default class CalendarPicker {
         // @ts-ignore
         this.picker.shouldConfirmBeforeCreate = this.plugin.settings.shouldConfirmBeforeCreate;
         let currentlySelectedDate: moment.Moment = moment();
-        const activeView: View = this.plugin.app.workspace.activeLeaf.view;
+        const activeView: View = this.plugin.app.workspace.getLeaf().view;
         try {
             // @ts-ignore
             if (activeView.file && moment(activeView.file.basename, getDailyNoteSettings().format, true).isValid()) {
