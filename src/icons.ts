@@ -1,6 +1,6 @@
 import { addIcon } from 'obsidian';
 
-export function addIcons() {
+export function addIcons(): void {
     addIcon(
         "JumpToDate",
         `<path fill="currentColor" stroke="currentColor" d="M 36.445312 55.1875 C 36.445312 53.933594 35.429688 52.917969 34.175781 52.917969 L 26.25 52.917969 C 25 52.917969 23.984375 53.933594 23.984375 55.1875 L 23.984375 63.109375 C 23.984375 64.363281 25 65.378906 26.25 65.378906 L 34.175781 65.378906 C 35.429688 65.378906 36.445312 64.363281 36.445312 63.109375 Z M 36.445312 55.1875 "/>

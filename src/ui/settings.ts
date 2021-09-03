@@ -23,7 +23,7 @@ export class SettingsTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		let { containerEl } = this;
+		const { containerEl } = this;
 		containerEl.empty();
 		containerEl.createEl('h2', { text: 'Obsidian42 - Jump-to-Date Setting' });
 		new Setting(containerEl)

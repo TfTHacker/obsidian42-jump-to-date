@@ -1,4 +1,4 @@
-import { Plugin, TFile } from 'obsidian';
+import { Plugin, TFile, moment } from 'obsidian';
 import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
 import { addIcons } from './icons';
 import { Settings, DEFAULT_SETTINGS, SettingsTab } from './ui/settings';
@@ -11,7 +11,7 @@ export default class ThePlugin extends Plugin {
 	ribbonIcon: HTMLElement;
 	datePicker: CalendarPicker;
 
-	async onload() {
+	async onload(): Promise<void> {
 		console.log('loading Obsidian42 Jump-to-Date plugin');
 
 		await this.loadSettings();
@@ -34,7 +34,7 @@ export default class ThePlugin extends Plugin {
 		});
 
 
-		this.app.workspace.onLayoutReady(()=>{
+		this.app.workspace.onLayoutReady(():void=>{
 			// If the Natural Language Date plugin is installed, enable this additional command
 			// otherwise the command is not available
 			// @ts-ignore
@@ -53,35 +53,37 @@ export default class ThePlugin extends Plugin {
 		this.datePicker = new CalendarPicker(this);
 	}
 
-	onunload() {
+	onunload(): void {
 		console.log('unloading Obsidian42 Jump-to-Date plugin');
 	}
 
-	async loadSettings() {
+	async loadSettings(): Promise<void> {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 
-	async saveSettings() {
+	async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
 	}
 
-	configureRibbonCommand() {
+	configureRibbonCommand(): void {
 		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => this.datePicker.open());
 	}
 
-	setFirstDayofWeek(dayOfWeek: number) {
+	setFirstDayofWeek(dayOfWeek: number): void {
 		this.datePicker.setFirstDayofWeek(dayOfWeek);
 	}
 
-	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate: boolean = true, newPane: boolean = false, newHorizontalPane: boolean = false) {
+	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate = true, newPane = false, newHorizontalPane = false): Promise<void> {
 		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {
 			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'horizontal', false);
+				const newLeaf = app.workspace.splitActiveLeaf('horizontal');
+				// const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'horizontal', false);
 				newLeaf.openFile(fileToOpen, { active: true });
 			} else if (openInNewPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'vertical', false);
+				const newLeaf = app.workspace.splitActiveLeaf('vertical');
+				// const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'vertical', false);
 				newLeaf.openFile(fileToOpen, { active: true });
 			} else {
 				// @ts-ignore
@@ -91,7 +93,7 @@ export default class ThePlugin extends Plugin {
 
 		const dateForDNPToOpen = moment(new Date(dateStr + 'T00:00:00'));
 
-		let dnpFileThatExistsInVault = getDailyNote(dateForDNPToOpen, getAllDailyNotes());
+		const dnpFileThatExistsInVault = getDailyNote(dateForDNPToOpen, getAllDailyNotes());
 
 		if (dnpFileThatExistsInVault != null) {
 			openFile(dnpFileThatExistsInVault, newPane, newHorizontalPane);
@@ -99,7 +101,7 @@ export default class ThePlugin extends Plugin {
 			if (shouldConfirmBeforeCreate === true) {
 				createConfirmationDialog({
 					cta: "Create",
-					onAccept: async (dateStr, e) => {
+					onAccept: async (dateStr): Promise<void> => {
 						const newDate = moment(new Date(dateStr));
 						openFile(await createDailyNote(newDate), newPane, newHorizontalPane);
 					},

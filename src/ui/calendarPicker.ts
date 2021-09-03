@@ -1,6 +1,6 @@
 import flatpickr from 'flatpickr';
 import ThePlugin from '../main';
-import { View } from 'obsidian';
+import { View, moment } from 'obsidian';
 import { getDailyNoteSettings } from 'obsidian-daily-notes-interface';
 
 export default class CalendarPicker {
@@ -11,7 +11,7 @@ export default class CalendarPicker {
         this.plugin = plugin;
     }
 
-    open() {
+    open(): void {
         if (this.picker !== null && this.picker.isOpen) { // if open already, just close it
             this.picker.destroy();
             this.picker = null;
@@ -35,7 +35,7 @@ export default class CalendarPicker {
                 // @ts-ignore
                 currentlySelectedDate = moment(activeView.file.basename);
             }
-        } catch (e) { }
+        } catch (e) { console.log(e) }
         this.picker.setDate(currentlySelectedDate.format('Y-MM-D'));
 
         this.picker.open();
@@ -47,7 +47,7 @@ export default class CalendarPicker {
         daySelected.focus();
     }
 
-    initializePicker() {
+    initializePicker(): void {
         const startingDayInWeek = this.plugin.settings.firstDayOfWeekIsSunday ? 0 : 1;
 
         // create and initialize settings in the calendar picker
@@ -113,7 +113,7 @@ export default class CalendarPicker {
         this.picker.shiftKeyPressed = false; // tracks if CTRL key is being held down
     }
 
-    setFirstDayofWeek(dayOfWeek: number) {
+    setFirstDayofWeek(dayOfWeek: number): void {
         this.picker.set('locale', { firstDayOfWeek: dayOfWeek })
     }
 

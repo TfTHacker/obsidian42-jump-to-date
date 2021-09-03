@@ -10,7 +10,7 @@ export default class DateNLP_Modal extends Modal {
         this.plugin = plugin;
     }
 
-    async submitForm(dateStr: string, ctrlKey: boolean, shiftKey: boolean) {
+    async submitForm(dateStr: string, ctrlKey: boolean, shiftKey: boolean): Promise<void> {
         await this.plugin.navigateToDNP(dateStr, this.plugin.settings.shouldConfirmBeforeCreate, ctrlKey, shiftKey);
         this.close();
     }
@@ -18,14 +18,13 @@ export default class DateNLP_Modal extends Modal {
     onOpen(): void {
         let previewEl: HTMLElement;
         let dateInput = '';
-        let ctrlKey: boolean = false;
-        let shiftKey: boolean = false;
+        let ctrlKey = false;
+        let shiftKey = false;
 
         const getDateStr = () => {
-            let cleanDateInput = dateInput;
             // @ts-ignore
             const parsedDate = this.app.plugins.getPlugin('nldates-obsidian').parseDate(dateInput)
-            let parsedDateString = parsedDate.formattedString === 'Invalid date'
+            const parsedDateString = parsedDate.formattedString === 'Invalid date'
                 ? ''
                 : parsedDate.formattedString.replace('[[', '').replace(']]', '');
 
