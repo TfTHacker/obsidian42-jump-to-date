@@ -4,6 +4,7 @@ import ThePlugin from 'src/main';
 
 export default class DateNLP_Modal extends Modal {
     plugin: ThePlugin;
+    date: string;
 
     constructor(app: App, plugin: ThePlugin) {
         super(app);
@@ -23,7 +24,8 @@ export default class DateNLP_Modal extends Modal {
 
         const getDateStr = () => {
             // @ts-ignore
-            const parsedDate = this.app.plugins.getPlugin('nldates-obsidian').parseDate(dateInput)
+            const parsedDate = this.app.plugins.getPlugin('nldates-obsidian').parseDate(dateInput);
+            this.date = parsedDate.date;
             const parsedDateString = parsedDate.formattedString === 'Invalid date'
                 ? ''
                 : parsedDate.formattedString.replace('[[', '').replace(']]', '');
@@ -46,7 +48,9 @@ export default class DateNLP_Modal extends Modal {
                         shiftKey = e.shiftKey;
                         if (ctrlKey && e.key === 'Enter' && previewEl.getText().trim() !== ' ') {
                             e.preventDefault();
-                            await this.submitForm(previewEl.getText().trim(), ctrlKey, shiftKey);
+                            // const newDate = moment(new Date(previewEl.getText().trim())).format('Y-MM-D');
+                            // console.log(newDate)
+                            // await this.submitForm(newDate, ctrlKey, shiftKey);
                         }
                     });
                     window.setTimeout(() => textEl.inputEl.focus(), 10);
@@ -68,7 +72,7 @@ export default class DateNLP_Modal extends Modal {
             formEl.addEventListener('submit', async (e: Event) => {
                 e.preventDefault();
                 if (previewEl.getText() !== '') {
-                    const newDate = moment(new Date(previewEl.getText().trim())).format('Y-MM-D');
+                    const newDate = moment(this.date).format('Y-MM-D');
                     await this.submitForm(newDate, ctrlKey, shiftKey);
                 };
             });
