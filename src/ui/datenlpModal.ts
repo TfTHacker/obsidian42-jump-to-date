@@ -1,4 +1,4 @@
-import { App, Modal, Setting } from 'obsidian';
+import { App, Modal, Setting, moment } from 'obsidian';
 import ThePlugin from 'src/main';
 
 
@@ -67,8 +67,10 @@ export default class DateNLP_Modal extends Modal {
             // invoked when button is clicked. 
             formEl.addEventListener('submit', async (e: Event) => {
                 e.preventDefault();
-                if (previewEl.getText() !== '')
-                    await this.submitForm(previewEl.getText().trim(), ctrlKey, shiftKey);
+                if (previewEl.getText() !== '') {
+                    const newDate = moment(new Date(previewEl.getText().trim())).format('Y-MM-D');
+                    await this.submitForm(newDate, ctrlKey, shiftKey);
+                };
             });
         });
 

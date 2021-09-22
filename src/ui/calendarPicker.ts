@@ -33,9 +33,11 @@ export default class CalendarPicker {
             // @ts-ignore
             if (activeView.file && moment(activeView.file.basename, getDailyNoteSettings().format, true).isValid()) {
                 // @ts-ignore
-                currentlySelectedDate = moment(activeView.file.basename);
+                currentlySelectedDate =  moment(activeView.file.basename, getDailyNoteSettings().format, true);
             }
         } catch (e) { console.log(e) }
+
+        
         this.picker.setDate(currentlySelectedDate.format('Y-MM-D'));
 
         this.picker.open();

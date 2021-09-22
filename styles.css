@@ -883,7 +883,7 @@ span.flatpickr-day.nextMonthDay.selected {
 	}
 
   .flatpickr-current-month select {
-    font-size: .8em;
-    max-height: .8em;
+    font-size: 1.4em;
+    max-height: 1.4em;
   }
   
