@@ -74,7 +74,7 @@ export default class DateNLP_Modal extends Modal {
                 if (previewEl.getText() !== '') {
                     const newDate = moment(this.date).format('Y-MM-D');
                     await this.submitForm(newDate, ctrlKey, shiftKey);
-                };
+                }
             });
         });
 

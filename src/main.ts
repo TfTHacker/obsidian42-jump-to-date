@@ -14,9 +14,9 @@ export default class ThePlugin extends Plugin {
 	async onload(): Promise<void> {
 		console.log('loading Obsidian42 Jump-to-Date plugin');
 
-		await this.loadSettings();
+		this.datePicker = new CalendarPicker(this);
 
-		this.addSettingTab(new SettingsTab(this.app, this));
+		await this.loadSettings();
 
 		addIcons();
 
@@ -33,6 +33,16 @@ export default class ThePlugin extends Plugin {
 			}
 		});
 
+		setTimeout(() => {
+			document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date').addEventListener('mouseup', async (event:MouseEvent) => {
+				event.preventDefault();
+				if(event.button===2) // right mouse click - open today's DNP right away
+					await this.navigateToDNP(moment().format("YYYY-MM-DD"),false,event.ctrlKey, event.shiftKey)
+				else  // any other button
+					this.datePicker.open();
+			});
+				
+		}, 3000); // wait for ribbon to load
 
 		this.app.workspace.onLayoutReady(():void=>{
 			// If the Natural Language Date plugin is installed, enable this additional command
@@ -50,7 +60,7 @@ export default class ThePlugin extends Plugin {
 			}
 		})
 
-		this.datePicker = new CalendarPicker(this);
+		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload(): void {
@@ -66,7 +76,7 @@ export default class ThePlugin extends Plugin {
 	}
 
 	configureRibbonCommand(): void {
-		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => this.datePicker.open());
+		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => {}); // see event listener for handling of this feature
 	}
 
 	setFirstDayofWeek(dayOfWeek: number): void {
