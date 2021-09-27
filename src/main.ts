@@ -33,17 +33,6 @@ export default class ThePlugin extends Plugin {
 			}
 		});
 
-		setTimeout(() => {
-			document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date').addEventListener('mouseup', async (event:MouseEvent) => {
-				event.preventDefault();
-				if(event.button===2) // right mouse click - open today's DNP right away
-					await this.navigateToDNP(moment().format("YYYY-MM-DD"),false,event.ctrlKey, event.shiftKey)
-				else  // any other button
-					this.datePicker.open();
-			});
-				
-		}, 3000); // wait for ribbon to load
-
 		this.app.workspace.onLayoutReady(():void=>{
 			// If the Natural Language Date plugin is installed, enable this additional command
 			// otherwise the command is not available
@@ -56,6 +45,16 @@ export default class ThePlugin extends Plugin {
 						const dt = new DateNLP_Modal(this.app, this);
 						dt.open();
 					}
+				});
+			}
+			const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
+			if(ribbonButton) {
+				ribbonButton.addEventListener('mouseup', async (event:MouseEvent) => {
+					event.preventDefault();
+					if(event.button===2) // right mouse click - open today's DNP right away
+						await this.navigateToDNP(moment().format("YYYY-MM-DD"),false,event.ctrlKey, event.shiftKey)
+					else  // any other button
+						this.datePicker.open();
 				});
 			}
 		})
