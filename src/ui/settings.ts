@@ -27,8 +27,8 @@ export class SettingsTab extends PluginSettingTab {
 		containerEl.empty();
 		containerEl.createEl('h2', { text: 'Obsidian42 - Jump-to-Date Setting' });
 		new Setting(containerEl)
-			.setName('Enable Ribbon Support')
-			.setDesc('Toggle on and off the Jump-to- Date button in the ribbon.')
+			.setName('Enable Calendar Popup')
+			.setDesc('Toggle on and off the Jump-to-Date button in the ribbon and command palette. If this is disabled, the Natural Language Date feature is still available in the command palette')
 			.addToggle((cb: ToggleComponent) => {
 				cb.setValue(this.plugin.settings.enableRibbon);
 				cb.onChange(async (value: boolean) => {

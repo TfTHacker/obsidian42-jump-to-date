@@ -26,14 +26,15 @@ export default class ThePlugin extends Plugin {
 		this.addCommand({
 			id: 'open-JumpToDate-calendar',
 			name: 'Date Picker',
-			callback: () => {
-				setTimeout(	()=>{
-					this.datePicker.open(); //need small delay when called from command palette
-				}, 250);
+			checkCallback: (check: boolean) => {
+				if (check)
+					return this.settings.enableRibbon;
+				else
+					setTimeout(() => { this.datePicker.open() }, 250);//need small delay when called from command palette
 			}
 		});
 
-		this.app.workspace.onLayoutReady(():void=>{
+		this.app.workspace.onLayoutReady((): void => {
 			// If the Natural Language Date plugin is installed, enable this additional command
 			// otherwise the command is not available
 			// @ts-ignore
@@ -48,11 +49,11 @@ export default class ThePlugin extends Plugin {
 				});
 			}
 			const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
-			if(ribbonButton) {
-				ribbonButton.addEventListener('mouseup', async (event:MouseEvent) => {
+			if (ribbonButton) {
+				ribbonButton.addEventListener('mouseup', async (event: MouseEvent) => {
 					event.preventDefault();
-					if(event.button===2) // right mouse click - open today's DNP right away
-						await this.navigateToDNP(moment().format("YYYY-MM-DD"),false,event.ctrlKey, event.shiftKey)
+					if (event.button === 2) // right mouse click - open today's DNP right away
+						await this.navigateToDNP(moment().format("YYYY-MM-DD"), false, event.ctrlKey, event.shiftKey)
 					else  // any other button
 						this.datePicker.open();
 				});
@@ -75,7 +76,7 @@ export default class ThePlugin extends Plugin {
 	}
 
 	configureRibbonCommand(): void {
-		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => {}); // see event listener for handling of this feature
+		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => { }); // see event listener for handling of this feature
 	}
 
 	setFirstDayofWeek(dayOfWeek: number): void {
@@ -83,6 +84,7 @@ export default class ThePlugin extends Plugin {
 	}
 
 	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate = true, newPane = false, newHorizontalPane = false): Promise<void> {
+		console.log(dateStr)
 		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {
 			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
@@ -116,7 +118,7 @@ export default class ThePlugin extends Plugin {
 					},
 					text: `File ${dateStr} does not exist. Would you like to create it?`,
 					title: "New Daily Note",
-					fileDate: dateForDNPToOpen.format('Y-MM-DD') + 'T00:00:00'
+					fileDate: dateForDNPToOpen.format('YYYY-MM-DD') + 'T00:00:00'
 				});
 			} else {
 				openFile(await createDailyNote(dateForDNPToOpen), newPane, newHorizontalPane);
