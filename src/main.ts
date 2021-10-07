@@ -84,7 +84,6 @@ export default class ThePlugin extends Plugin {
 	}
 
 	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate = true, newPane = false, newHorizontalPane = false): Promise<void> {
-		console.log(dateStr)
 		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {
 			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
