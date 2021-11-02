@@ -36,7 +36,7 @@ export class SettingsTab extends PluginSettingTab {
 					if (this.plugin.settings.enableRibbon === false)
 						this.plugin.ribbonIcon.remove();
 					else
-						this.plugin.configureRibbonCommand();
+						this.plugin.showRibbonButton();
 					await this.plugin.saveSettings();
 				});
 			});

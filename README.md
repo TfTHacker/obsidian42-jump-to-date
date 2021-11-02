@@ -40,3 +40,20 @@ From the command palette, invoke the Natural Language Date feature. Then using t
 - Thank you to Liam Cain for the use of his [obsidian-daily-notes-interface](https://github.com/liamcain/obsidian-daily-notes-interface) library for dealing with Daily Notes Page files
 - Thank you to Argentina Ortega Sáinz for the [nldates-obsidian](https://github.com/argenos/nldates-obsidian) library, which assists with parsing Natural Language Dates
 
+
+
+# Say Thank You
+If you are enjoying this plugin then feel free to buying me a coffee on [https://ko-fi/TfTHacker](https://ko-fi.com/TfTHacker).
+
+Please also help spread the word by sharing your enthusiasim for this plugin on Twitter, Reddit, or any other social media platform you regularly use. 
+
+You can find me on Twitter [@TfTHacker](https://twitter.com/TfTHacker)
+
+[<img src="https://user-images.githubusercontent.com/14358394/115450238-f39e8100-a21b-11eb-89d0-fa4b82cdbce8.png" width="200">](https://ko-fi.com/TfTHacker)
+
+Also
+
+- Bitcoin address: bc1qgx052tja4fsh5fv65rr6ceytj8zmjplvauxcuk
+- Bitcoin cash: qp40hnhm24v785pyzl8dvsax9tzc2tur8vx32lshn4
+- Ethereum address: 0xb29782A4EA6e02BbdF296671D8576bB045abf8AE
+- Binance address: bnb18p4adhzlhvsxudkrduxqng9em992fj0raa5d6d

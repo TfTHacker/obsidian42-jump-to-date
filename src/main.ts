@@ -20,9 +20,6 @@ export default class ThePlugin extends Plugin {
 
 		addIcons();
 
-		if (this.settings.enableRibbon)
-			this.configureRibbonCommand();
-
 		this.addCommand({
 			id: 'open-JumpToDate-calendar',
 			name: 'Date Picker',
@@ -48,16 +45,8 @@ export default class ThePlugin extends Plugin {
 					}
 				});
 			}
-			const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
-			if (ribbonButton) {
-				ribbonButton.addEventListener('mouseup', async (event: MouseEvent) => {
-					event.preventDefault();
-					if (event.button === 2) // right mouse click - open today's DNP right away
-						await this.navigateToDNP(moment().format("YYYY-MM-DD"), false, event.ctrlKey, event.shiftKey)
-					else  // any other button
-						this.datePicker.open();
-				});
-			}
+
+			if (this.settings.enableRibbon) this.showRibbonButton();
 		})
 
 		this.addSettingTab(new SettingsTab(this.app, this));
@@ -75,8 +64,21 @@ export default class ThePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	configureRibbonCommand(): void {
-		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => { }); // see event listener for handling of this feature
+	showRibbonButton(): void {
+		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => { return; }); // see event listener for handling of this feature
+		setTimeout(()=> { // wait for ribbon button to be inserted into HTML
+			const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
+			if (ribbonButton) {
+				ribbonButton.addEventListener('mouseup', async (event: MouseEvent) => {
+					event.preventDefault();
+					if (event.button === 2) // right mouse click - open today's DNP right away
+						await this.navigateToDNP(moment().format("YYYY-MM-DD"), false, event.ctrlKey, event.shiftKey)
+					else  // any other button
+						this.datePicker.open();
+				});
+			}				
+		}, 2000);
+
 	}
 
 	setFirstDayofWeek(dayOfWeek: number): void {
