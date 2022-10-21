@@ -13,3 +13,5 @@ dict-MyDict.json
 
 # obsidian
 data.json
+
+.DS_Store
