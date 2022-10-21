@@ -1,4 +1,4 @@
-import { Plugin, TFile, moment } from 'obsidian';
+import { Plugin, TFile, moment, Platform } from 'obsidian';
 import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
 import { addIcons } from './icons';
 import { Settings, DEFAULT_SETTINGS, SettingsTab } from './ui/settings';
@@ -65,20 +65,27 @@ export default class ThePlugin extends Plugin {
 	}
 
 	showRibbonButton(): void {
-		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => { return; }); // see event listener for handling of this feature
-		setTimeout(()=> { // wait for ribbon button to be inserted into HTML
-			const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
-			if (ribbonButton) {
-				ribbonButton.addEventListener('mouseup', async (event: MouseEvent) => {
-					event.preventDefault();
-					if (event.button === 2) // right mouse click - open today's DNP right away
-						await this.navigateToDNP(moment().format("YYYY-MM-DD"), false, event.ctrlKey, event.shiftKey)
-					else  // any other button
-						this.datePicker.open();
-				});
-			}				
-		}, 2000);
+		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => { 
+			if(Platform.isMobileApp || Platform.isMobile) { //if mobile call the open command, otherwise use the event handler below
+				this.datePicker.open();
+			}
+			return; 
+		}); // see event listener for handling of this feature
 
+		if(!(Platform.isMobileApp || Platform.isMobile)) {
+			setTimeout(()=> { // wait for ribbon button to be inserted into HTML
+				const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
+				if (ribbonButton) {
+					ribbonButton.addEventListener('mouseup', async (event: MouseEvent) => {
+						event.preventDefault();
+						if (event.button === 2) // right mouse click - open today's DNP right away
+							await this.navigateToDNP(moment().format("YYYY-MM-DD"), false, event.ctrlKey, event.shiftKey)
+						else  // any other button
+							this.datePicker.open();
+					});
+				}				
+			}, 2000);	
+		}
 	}
 
 	setFirstDayofWeek(dayOfWeek: number): void {

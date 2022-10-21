@@ -1,6 +1,6 @@
 import flatpickr from 'flatpickr';
 import ThePlugin from '../main';
-import { View, moment } from 'obsidian';
+import { View, moment, Platform } from 'obsidian';
 import { getDailyNoteSettings } from 'obsidian-daily-notes-interface';
 
 export default class CalendarPicker {
@@ -54,8 +54,11 @@ export default class CalendarPicker {
 
         // create and initialize settings in the calendar picker
         if (this.picker !== null) this.picker.destroy()
+
+        const querySelectorPathForParent = (Platform.isMobileApp || Platform.isMobile) ? ".mobile-navbar-action" : 'div[aria-label="Jump-to-Date"]';
+
         this.picker = flatpickr(
-            document.querySelector('div[aria-label="Jump-to-Date"]'),
+            document.querySelector(querySelectorPathForParent),
             {
                 onChange: async function (selectedDates, dateStr, instance) {
                     // @ts-ignore
