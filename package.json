@@ -15,17 +15,18 @@
     "url": "git://github.com/TfTHacker/obsidian42-jump-to-date.git"
   },
   "devDependencies": {
-    "@types/node": "^18.11.3",
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "@typescript-eslint/parser": "^5.40.1",
-    "eslint": "^8.25.0",
-    "esbuild": "0.15.12",       
-    "tslib": "2.4.0",
-    "typescript": "^4.8.4"
+    "@types/node": "^20.11.7",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "esbuild": "0.19.12",
+    "builtin-modules": "3.3.0",
+    "tslib": "2.6.2",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "flatpickr": "^4.6.13",
-    "obsidian": "^0.16.3",
+    "obsidian": "^1.4.11",
     "obsidian-daily-notes-interface": "^0.9.4"
   }
 }
