@@ -6,7 +6,7 @@ Check out the documentation for this plugin at: https://tfthacker.com/jumptodate
 
 ![Feature Preview](FeaturePreview-ribbon.gif)
 
-## Ways to eonnect with me and more information on my work
+## Ways to connect with me and more information on my work
 
 You might also be interested in a few products I have made for Obsidian:
 
