@@ -1,3 +1,7 @@
+# 1.0.18
+### Fix
+- Fixed problem with ribbon icon being actived when opening ocmmmand prompt
+
 # 1.0.17
 
 ### Updates

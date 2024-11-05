@@ -37,7 +37,6 @@ export default class CalendarPicker {
 		let currentlySelectedDate: moment.Moment = moment();
 		const activeView: View = this.plugin.app.workspace.getLeaf().view;
 		try {
-			// @ts-ignore
 			if (
 				activeView.file &&
 				moment(

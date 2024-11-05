@@ -27,10 +27,10 @@ export default class JumpToDatePlugin extends Plugin {
 		this.addCommand({
 			id: "open-JumpToDate-calendar",
 			name: "Date Picker",
-			checkCallback: (check: boolean) => {
+			callback: () => {
 				setTimeout(() => {
 					this.datePicker.open();
-				}, 250); //need small delay when called from command palette
+				}, 150); //need small delay when called from command palette
 			},
 		});
 
@@ -50,7 +50,6 @@ export default class JumpToDatePlugin extends Plugin {
 					},
 				});
 			}
-
 		});
 
 		this.addSettingTab(new SettingsTab(this.app, this));
@@ -101,7 +100,9 @@ export default class JumpToDatePlugin extends Plugin {
 									event.shiftKey,
 								);
 							// any other button
-							else this.datePicker.open();
+							else {
+								this.datePicker.open();
+							}
 						},
 					);
 				}
