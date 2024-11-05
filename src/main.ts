@@ -1,18 +1,22 @@
-import { Plugin, TFile, moment, Platform } from 'obsidian';
-import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
-import { addIcons } from './icons';
-import { Settings, DEFAULT_SETTINGS, SettingsTab } from './ui/settings';
-import CalendarPicker from './ui/calendarPicker';
-import DateNLP_Modal from './ui/datenlpModal';
-import { createConfirmationDialog } from './ui/confirmationModal';
+import { Platform, Plugin, type TFile, moment } from "obsidian";
+import {
+	createDailyNote,
+	getAllDailyNotes,
+	getDailyNote,
+} from "obsidian-daily-notes-interface";
+import { addIcons } from "./icons";
+import CalendarPicker from "./ui/calendarPicker";
+import { createConfirmationDialog } from "./ui/confirmationModal";
+import DateNLP_Modal from "./ui/datenlpModal";
+import { DEFAULT_SETTINGS, type Settings, SettingsTab } from "./ui/settings";
 
-export default class ThePlugin extends Plugin {
+export default class JumpToDatePlugin extends Plugin {
 	settings: Settings;
 	ribbonIcon: HTMLElement;
 	datePicker: CalendarPicker;
 
 	async onload(): Promise<void> {
-		console.log('loading Obsidian42 Jump-to-Date plugin');
+		console.log("loading Obsidian42 Jump-to-Date plugin");
 
 		this.datePicker = new CalendarPicker(this);
 
@@ -21,39 +25,39 @@ export default class ThePlugin extends Plugin {
 		addIcons();
 
 		this.addCommand({
-			id: 'open-JumpToDate-calendar',
-			name: 'Date Picker',
+			id: "open-JumpToDate-calendar",
+			name: "Date Picker",
 			checkCallback: (check: boolean) => {
-				if (check)
-					return this.settings.enableRibbon;
-				else
-					setTimeout(() => { this.datePicker.open() }, 250);//need small delay when called from command palette
-			}
+				setTimeout(() => {
+					this.datePicker.open();
+				}, 250); //need small delay when called from command palette
+			},
 		});
+
+		this.showRibbonButton();
 
 		this.app.workspace.onLayoutReady((): void => {
 			// If the Natural Language Date plugin is installed, enable this additional command
 			// otherwise the command is not available
 			// @ts-ignore
-			if (this.app.plugins.getPlugin('nldates-obsidian')) {
+			if (this.app.plugins.getPlugin("nldates-obsidian")) {
 				this.addCommand({
-					id: 'open-JumpToDate-nlp',
-					name: 'Natural Language Date',
+					id: "open-JumpToDate-nlp",
+					name: "Natural Language Date",
 					callback: () => {
 						const dt = new DateNLP_Modal(this.app, this);
 						dt.open();
-					}
+					},
 				});
 			}
 
-			if (this.settings.enableRibbon) this.showRibbonButton();
-		})
+		});
 
 		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload(): void {
-		console.log('unloading Obsidian42 Jump-to-Date plugin');
+		console.log("unloading Obsidian42 Jump-to-Date plugin");
 	}
 
 	async loadSettings(): Promise<void> {
@@ -65,26 +69,43 @@ export default class ThePlugin extends Plugin {
 	}
 
 	showRibbonButton(): void {
-		this.ribbonIcon = this.addRibbonIcon('JumpToDate', 'Jump-to-Date', async () => { 
-			if(Platform.isMobileApp || Platform.isMobile) { //if mobile call the open command, otherwise use the event handler below
-				this.datePicker.open();
-			}
-			return; 
-		}); // see event listener for handling of this feature
+		this.ribbonIcon = this.addRibbonIcon(
+			"JumpToDate",
+			"Jump-to-Date",
+			async () => {
+				if (Platform.isMobileApp || Platform.isMobile) {
+					//if mobile call the open command, otherwise use the event handler below
+					this.datePicker.open();
+				}
+				return;
+			},
+		); // see event listener for handling of this feature
 
-		if(!(Platform.isMobileApp || Platform.isMobile)) {
-			setTimeout(()=> { // wait for ribbon button to be inserted into HTML
-				const ribbonButton = document.querySelector('.side-dock-ribbon-action[aria-label="Jump-to-Date')
+		if (!(Platform.isMobileApp || Platform.isMobile)) {
+			setTimeout(() => {
+				// wait for ribbon button to be inserted into HTML
+				const ribbonButton = document.querySelector(
+					'.side-dock-ribbon-action[aria-label="Jump-to-Date',
+				);
 				if (ribbonButton) {
-					ribbonButton.addEventListener('mouseup', async (event: MouseEvent) => {
-						event.preventDefault();
-						if (event.button === 2) // right mouse click - open today's DNP right away
-							await this.navigateToDNP(moment().format("YYYY-MM-DD"), false, event.ctrlKey, event.shiftKey)
-						else  // any other button
-							this.datePicker.open();
-					});
-				}				
-			}, 2000);	
+					ribbonButton.addEventListener(
+						"mouseup",
+						async (event: MouseEvent) => {
+							event.preventDefault();
+							if (event.button === 2)
+								// right mouse click - open today's DNP right away
+								await this.navigateToDNP(
+									moment().format("YYYY-MM-DD"),
+									false,
+									event.ctrlKey,
+									event.shiftKey,
+								);
+							// any other button
+							else this.datePicker.open();
+						},
+					);
+				}
+			}, 2000);
 		}
 	}
 
@@ -92,27 +113,39 @@ export default class ThePlugin extends Plugin {
 		this.datePicker.setFirstDayofWeek(dayOfWeek);
 	}
 
-	async navigateToDNP(dateStr: string, shouldConfirmBeforeCreate = true, newPane = false, newHorizontalPane = false): Promise<void> {
-		const openFile = (fileToOpen: TFile, openInNewPane: boolean, openInHorizontalPane: boolean) => {
+	async navigateToDNP(
+		dateStr: string,
+		shouldConfirmBeforeCreate = true,
+		newPane = false,
+		newHorizontalPane = false,
+	): Promise<void> {
+		const openFile = (
+			fileToOpen: TFile,
+			openInNewPane: boolean,
+			openInHorizontalPane: boolean,
+		) => {
 			if (newPane && openInHorizontalPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.splitActiveLeaf('horizontal');
+				const newLeaf = app.workspace.splitActiveLeaf("horizontal");
 				// const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'horizontal', false);
 				newLeaf.openFile(fileToOpen, { active: true });
 			} else if (openInNewPane) {
 				// @ts-ignore
-				const newLeaf = app.workspace.splitActiveLeaf('vertical');
+				const newLeaf = app.workspace.splitActiveLeaf("vertical");
 				// const newLeaf = app.workspace.createLeafBySplit(app.workspace.getLeaf(), 'vertical', false);
 				newLeaf.openFile(fileToOpen, { active: true });
 			} else {
 				// @ts-ignore
 				app.workspace.getLeaf().openFile(fileToOpen);
 			}
-		}
+		};
 
-		const dateForDNPToOpen = moment(new Date(dateStr + 'T00:00:00'));
+		const dateForDNPToOpen = moment(new Date(`${dateStr}T00:00:00`));
 
-		const dnpFileThatExistsInVault = getDailyNote(dateForDNPToOpen, getAllDailyNotes());
+		const dnpFileThatExistsInVault = getDailyNote(
+			dateForDNPToOpen,
+			getAllDailyNotes(),
+		);
 
 		if (dnpFileThatExistsInVault != null) {
 			openFile(dnpFileThatExistsInVault, newPane, newHorizontalPane);
@@ -122,17 +155,23 @@ export default class ThePlugin extends Plugin {
 					cta: "Create",
 					onAccept: async (dateStr): Promise<void> => {
 						const newDate = moment(new Date(dateStr));
-						openFile(await createDailyNote(newDate), newPane, newHorizontalPane);
+						openFile(
+							await createDailyNote(newDate),
+							newPane,
+							newHorizontalPane,
+						);
 					},
 					text: `File ${dateStr} does not exist. Would you like to create it?`,
 					title: "New Daily Note",
-					fileDate: dateForDNPToOpen.format('YYYY-MM-DD') + 'T00:00:00'
+					fileDate: `${dateForDNPToOpen.format("YYYY-MM-DD")}T00:00:00`,
 				});
 			} else {
-				openFile(await createDailyNote(dateForDNPToOpen), newPane, newHorizontalPane);
+				openFile(
+					await createDailyNote(dateForDNPToOpen),
+					newPane,
+					newHorizontalPane,
+				);
 			}
 		}
 	}
-
 }
-
