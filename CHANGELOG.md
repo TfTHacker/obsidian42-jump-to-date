@@ -1,3 +1,8 @@
+# 1.0.19
+### Updates
+- Updated dependencies
+
+
 # 1.0.18
 ### Fix
 - Fixed problem with ribbon icon being actived when opening ocmmmand prompt

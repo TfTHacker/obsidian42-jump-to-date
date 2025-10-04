@@ -1,8 +1,8 @@
 {
 	"id": "obsidian-jump-to-date-plugin",
 	"name": "Jump-to-Date",
-	"version": "1.0.18",
-	"minAppVersion": "1.7.2",
+	"version": "1.0.19",
+	"minAppVersion": "1.9.14",
 	"description": "Popup calendar for quickly navigating dates",
 	"author": "TfT Hacker",
 	"authorUrl": "https://github.com/TfTHacker/obsidian42-jump-to-date",
