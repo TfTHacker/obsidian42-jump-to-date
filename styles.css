@@ -887,3 +887,21 @@ span.flatpickr-day.nextMonthDay.selected {
     max-height: 1.4em;
   }
   
+  .day-diff {
+  display: block;
+  font-size: 0.7em;
+  margin-top: -2px;
+}
+
+.flatpickr-day[data-diff="past"] .day-diff {
+  color: red;
+}
+
+.flatpickr-day[data-diff="future"] .day-diff {
+  color: green;
+}
+
+.flatpickr-day[data-diff="today"] .day-diff {
+  color: black;
+  font-weight: 600;
+}
