@@ -3,6 +3,12 @@ name: Dependabot Release
 on:
   pull_request:
     types: [closed]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual run"
+        required: false
+        default: "manual test"
 
 permissions:
   contents: write
@@ -10,8 +16,9 @@ permissions:
 jobs:
   release:
     if: >
-      github.event.pull_request.merged == true &&
-      github.event.pull_request.user.login == 'dependabot[bot]'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+      github.event.pull_request.user.login == 'dependabot[bot]')
     runs-on: ubuntu-latest
 
     steps:
