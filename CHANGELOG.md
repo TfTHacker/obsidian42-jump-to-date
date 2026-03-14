@@ -1,3 +1,8 @@
+# 1.0.21
+### Updates
+- Security dependency updates (Dependabot).
+
+
 # 1.0.20
 ### Updates
 - Thank you to @Smoothini for PR #18 adding day difference display in the calendar view.
