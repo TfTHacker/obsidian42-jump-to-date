@@ -23,7 +23,7 @@ export class ConfirmationModal extends Modal {
 		// have to store the date somewhere since the eventing system was not passing in context on mobile.
 		const e: HTMLParagraphElement = this.contentEl.createEl("p", { text });
 		e.id = "jumptodate-confirmdialog";
-		e.setAttr("fileDate", fileDate);
+		e.setAttribute("data-file-date", fileDate);
 
 		this.contentEl.createDiv("modal-button-container", (buttonsEl) => {
 			buttonsEl
@@ -36,12 +36,13 @@ export class ConfirmationModal extends Modal {
 				text: cta,
 			});
 			btnSumbit.addEventListener("click", async (e) => {
-				const dateStr: string = document
+				const dateStr = document
 					.getElementById("jumptodate-confirmdialog")
-					.getAttr("filedate")
-					.toString();
-				await onAccept(dateStr, e);
-				this.close();
+					?.getAttribute("data-file-date");
+				if (dateStr) {
+					await onAccept(dateStr, e);
+					this.close();
+				}
 			});
 			setTimeout(() => {
 				btnSumbit.focus();

@@ -63,14 +63,16 @@ export default class CalendarPicker {
 
 
 		// Next few lines of code set focus and prepare control to be navigated by keybaord. Requires simulating one Arrow key press to make it active
-		const daySelected: HTMLElement = document.querySelector(
+		const daySelected = document.querySelector(
 			".obsidian42-jump-to-date .flatpickr-day.selected",
-		);
-		daySelected.focus();
-		daySelected.dispatchEvent(
-			new KeyboardEvent("keydown", { key: "ArrowRight" }),
-		);
-		daySelected.focus();
+		) as HTMLElement | null;
+		if (daySelected) {
+			daySelected.focus();
+			daySelected.dispatchEvent(
+				new KeyboardEvent("keydown", { key: "ArrowRight" }),
+			);
+			daySelected.focus();
+		}
 	}
 
 	initializePicker(): void {
@@ -128,17 +130,19 @@ export default class CalendarPicker {
 			"keyup",
 			(e: KeyboardEvent) => {
 				if (e.key === "Enter") {
-					// @ts-ignore
-					const newDate = moment(new Date(e.target.dateObj)).format("Y-MM-D");
-					// @ts-ignore
-					this.picker.navigateToDNP(
-						newDate,
-						this.picker.shouldConfirmBeforeCreate,
-						e.ctrlKey || e.metaKey,
-						e.shiftKey,
-					);
-					this.picker.destroy();
-					this.picker = null;
+					const target = e.target as HTMLElement & { dateObj?: Date };
+					if (target?.dateObj) {
+						const newDate = moment(new Date(target.dateObj)).format("Y-MM-D");
+						// @ts-ignore
+						this.picker.navigateToDNP(
+							newDate,
+							this.picker.shouldConfirmBeforeCreate,
+							e.ctrlKey || e.metaKey,
+							e.shiftKey,
+						);
+						this.picker.destroy();
+						this.picker = null;
+					}
 				} else {
 					// @ts-ignores
 					this.picker.controlKeyPressed = e.ctrlKey || e.metaKey;
@@ -158,16 +162,18 @@ export default class CalendarPicker {
 		this.picker.daysContainer.addEventListener(
 			"contextmenu",
 			(e: MouseEvent) => {
-				// @ts-ignore
-				const newDate = moment(new Date(e.target.dateObj)).format("Y-MM-D");
-				// @ts-ignore
-				this.picker.navigateToDNP(
-					newDate,
-					this.picker.shouldConfirmBeforeCreate,
-					true,
-					this.picker.shiftKeyPressed,
-				);
-				this.picker.destroy();
+				const target = e.target as HTMLElement & { dateObj?: Date };
+				if (target?.dateObj) {
+					const newDate = moment(new Date(target.dateObj)).format("Y-MM-D");
+					// @ts-ignore
+					this.picker.navigateToDNP(
+						newDate,
+						this.picker.shouldConfirmBeforeCreate,
+						true,
+						this.picker.shiftKeyPressed,
+					);
+					this.picker.destroy();
+				}
 			},
 		);
 

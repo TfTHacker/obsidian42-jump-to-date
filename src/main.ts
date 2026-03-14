@@ -84,7 +84,7 @@ export default class JumpToDatePlugin extends Plugin {
 			setTimeout(() => {
 				// wait for ribbon button to be inserted into HTML
 				const ribbonButton = document.querySelector(
-					'.side-dock-ribbon-action[aria-label="Jump-to-Date',
+					'.side-dock-ribbon-action[aria-label="Jump-to-Date"]',
 				);
 				if (ribbonButton) {
 					ribbonButton.addEventListener(

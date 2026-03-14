@@ -1,0 +1,13 @@
+.vscode
+.github
+.claude
+.DS_Store
+node_modules
+package-lock.json
+build
+src
+*.js.map
+dict-MyDict.json
+data.json
+FeaturePreview-ribbon.gif
+DEV_NOTES.MD

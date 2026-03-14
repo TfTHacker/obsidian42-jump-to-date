@@ -1,3 +1,9 @@
+# 1.0.20
+### Updates
+- Thank you to @Smoothini for PR #18 adding day difference display in the calendar view.
+- Updated dependencies
+
+
 # 1.0.19
 ### Updates
 - Updated dependencies
