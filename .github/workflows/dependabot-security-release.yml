@@ -45,6 +45,9 @@ jobs:
           npm run version
           node update-changelog.mjs
 
+      - name: Build plugin
+        run: npm run build
+
       - name: Commit version bump
         run: |
           git config user.name "github-actions[bot]"
@@ -56,3 +59,12 @@ jobs:
 
       - name: Tag and push release
         run: npm run githubaction
+
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(node -e "console.log(require('./package.json').version)")
+          gh release create "$version" \
+            --title="$version" \
+            build/main.js manifest.json styles.css
