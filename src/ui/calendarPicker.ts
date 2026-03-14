@@ -60,6 +60,8 @@ export default class CalendarPicker {
 
 		this.picker.open();
 
+
+
 		// Next few lines of code set focus and prepare control to be navigated by keybaord. Requires simulating one Arrow key press to make it active
 		const daySelected: HTMLElement = document.querySelector(
 			".obsidian42-jump-to-date .flatpickr-day.selected",
@@ -75,6 +77,8 @@ export default class CalendarPicker {
 		const startingDayInWeek = this.plugin.settings.firstDayOfWeekIsSunday
 			? 0
 			: 1;
+		
+		const showDayDifference = this.plugin.settings.showDayDifferenceOnCalendar;
 
 		// create and initialize settings in the calendar picker
 		if (this.picker !== null) this.picker.destroy();
@@ -99,6 +103,12 @@ export default class CalendarPicker {
 				},
 				disableMobile: true,
 				locale: { firstDayOfWeek: startingDayInWeek },
+
+				onReady: (selectedDates, dateStr, instance) => {
+					setTimeout(() => this.decorateDays(instance, showDayDifference), 50);
+				},
+				onMonthChange: (selectedDates, dateStr, instance) => this.decorateDays(instance, showDayDifference),
+				onYearChange: (selectedDates, dateStr, instance) => this.decorateDays(instance, showDayDifference),
 			},
 		);
 
@@ -172,4 +182,56 @@ export default class CalendarPicker {
 	setFirstDayofWeek(dayOfWeek: number): void {
 		this.picker.set("locale", { firstDayOfWeek: dayOfWeek });
 	}
+
+	// add decorations to days in the calendar picker showing their difference from today
+	// added by Smoothini, October 2025
+	decorateDays(instance: flatpickr.Instance, decorate: boolean) {
+		if (!instance || !instance.daysContainer || !decorate) return;
+
+		const days = instance.daysContainer.querySelectorAll(".flatpickr-day");
+		const today = moment().startOf("day");
+		const nowHour = moment().hour();
+
+		days.forEach((dayEl: HTMLElement) => {
+			const dateStr = dayEl.getAttribute("aria-label");
+			if (!dateStr) return;
+
+			const date = moment(dateStr, "MMMM D, YYYY"); // matches Flatpickr's aria-label format
+			const diff = date.diff(today, "days");
+
+			// remove any previous decoration if re-rendered
+			const existing = dayEl.querySelector(".day-diff");
+			if (existing) existing.remove();
+
+			dayEl.style.display = "flex";
+			dayEl.style.flexDirection = "column";
+			dayEl.style.alignItems = "center";
+			dayEl.style.justifyContent = "center";
+			dayEl.style.lineHeight = "1.1";
+
+			// create new label
+			const span = document.createElement("span");
+			span.classList.add("day-diff");
+			span.style.display = "block";
+			span.style.fontSize = "0.7em";
+			span.style.marginTop = "2px";
+			span.style.lineHeight = "1";
+			span.style.opacity = "0.9";
+
+			// Assign text
+			if (diff === 0 && nowHour < 4) {
+				span.textContent = "0🌛";
+			} else {
+				span.textContent = diff.toString();
+			}
+
+			// Color logic
+			dayEl.dataset.diff =
+				diff < 0 ? "past" : diff > 0 ? "future" : "today";
+
+			// Append under the day number
+			dayEl.appendChild(span);
+		});
+	}
+
 }

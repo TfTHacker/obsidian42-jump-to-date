@@ -9,11 +9,13 @@ import type JumpToDatePlugin from "../main";
 export interface Settings {
 	shouldConfirmBeforeCreate: boolean;
 	firstDayOfWeekIsSunday: boolean;
+	showDayDifferenceOnCalendar: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
 	shouldConfirmBeforeCreate: false,
 	firstDayOfWeekIsSunday: true,
+	showDayDifferenceOnCalendar: false,
 };
 
 export class SettingsTab extends PluginSettingTab {
@@ -48,6 +50,20 @@ export class SettingsTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.firstDayOfWeekIsSunday);
 				cb.onChange(async (value: boolean) => {
 					this.plugin.settings.firstDayOfWeekIsSunday = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+			
+		new Setting(containerEl)
+			.setName("Show time difference from today on calendar days")
+			.setDesc(
+				"If toggled on the calendar will show the number of days difference from today on each day in the calendar, and for the current date if the time is between midnight and 4AM, it will add a moon emoji.",
+			)
+			.addToggle((cb: ToggleComponent) => {
+				cb.setValue(this.plugin.settings.showDayDifferenceOnCalendar);
+				cb.onChange(async (value: boolean) => {
+					this.plugin.settings.showDayDifferenceOnCalendar = value;
 					await this.plugin.saveSettings();
 				});
 			});
