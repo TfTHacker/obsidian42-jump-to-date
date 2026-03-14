@@ -1,3 +1,8 @@
+# 1.0.22
+### Updates
+- Security dependency updates (Dependabot).
+
+
 # 1.0.21
 ### Updates
 - Security dependency updates (Dependabot).
