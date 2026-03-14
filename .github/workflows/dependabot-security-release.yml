@@ -1,0 +1,46 @@
+name: Dependabot Release
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "21.x"
+
+      - name: Install
+        run: npm ci
+
+      - name: Bump version and update files
+        run: |
+          npm version patch --no-git-tag-version
+          npm run version
+          node update-changelog.mjs
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          version=$(node -e "console.log(require('./package.json').version)")
+          git commit -m "Release ${version} (security deps)"
+          git push origin HEAD:main
+
+      - name: Tag and push release
+        run: npm run githubaction
