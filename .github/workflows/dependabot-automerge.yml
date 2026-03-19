@@ -1,0 +1,80 @@
+name: Dependabot Automerge
+
+on:
+  workflow_run:
+    workflows: ["PR Checks"]
+    types: [completed]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.pull_requests[0]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Select PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          pr_json=$(gh pr view "$PR_NUMBER" --json number,author,baseRefName,body,isDraft,mergeStateStatus)
+          echo "json<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$pr_json" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Gate automerge
+        id: gate
+        env:
+          PR_JSON: ${{ steps.pr.outputs.json }}
+        run: |
+          author=$(echo "$PR_JSON" | jq -r '.author.login')
+          is_draft=$(echo "$PR_JSON" | jq -r '.isDraft')
+          base_ref=$(echo "$PR_JSON" | jq -r '.baseRefName')
+          body=$(echo "$PR_JSON" | jq -r '.body')
+
+          if [ "$author" != "app/dependabot" ]; then
+            echo "should_merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$is_draft" = "true" ]; then
+            echo "should_merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$base_ref" != "main" ]; then
+            echo "should_merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if echo "$body" | grep -q 'update-type: version-update:semver-major'; then
+            echo "should_merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_merge=true" >> "$GITHUB_OUTPUT"
+
+      - name: Merge PR
+        if: steps.gate.outputs.should_merge == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          PR_JSON: ${{ steps.pr.outputs.json }}
+        run: |
+          merge_state=$(echo "$PR_JSON" | jq -r '.mergeStateStatus')
+          if [ "$merge_state" != "CLEAN" ] && [ "$merge_state" != "UNSTABLE" ]; then
+            echo "PR merge state is $merge_state; skipping."
+            exit 0
+          fi
+
+          gh pr merge "$PR_NUMBER" --squash --delete-branch
