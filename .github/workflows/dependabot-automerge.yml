@@ -25,9 +25,10 @@ jobs:
         id: pr
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
         run: |
-          pr_json=$(gh pr view "$PR_NUMBER" --json number,author,baseRefName,body,isDraft,mergeStateStatus)
+          pr_json=$(gh pr view "$PR_NUMBER" --repo "$GH_REPO" --json number,author,baseRefName,body,isDraft,mergeStateStatus)
           echo "json<<EOF" >> "$GITHUB_OUTPUT"
           echo "$pr_json" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
@@ -68,6 +69,7 @@ jobs:
         if: steps.gate.outputs.should_merge == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
           PR_JSON: ${{ steps.pr.outputs.json }}
         run: |
@@ -77,4 +79,4 @@ jobs:
             exit 0
           fi
 
-          gh pr merge "$PR_NUMBER" --squash --delete-branch
+          gh pr merge "$PR_NUMBER" --repo "$GH_REPO" --squash --delete-branch
