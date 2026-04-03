@@ -18,7 +18,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.10",
-		"@types/node": "^25.5.0",
+		"@types/node": "^25.5.2",
 		"builtin-modules": "5.0.0",
 		"esbuild": "0.27.7",
 		"tslib": "^2.7.0",
