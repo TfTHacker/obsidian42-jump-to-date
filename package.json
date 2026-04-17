@@ -22,7 +22,7 @@
 		"builtin-modules": "5.1.0",
 		"esbuild": "0.28.0",
 		"tslib": "^2.7.0",
-		"typescript": "^6.0.2"
+		"typescript": "^6.0.3"
 	},
 	"dependencies": {
 		"flatpickr": "^4.6.13",
