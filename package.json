@@ -26,7 +26,7 @@
 	},
 	"dependencies": {
 		"flatpickr": "^4.6.13",
-		"obsidian": "^1.13.0",
+		"obsidian": "^1.13.1",
 		"obsidian-daily-notes-interface": "^0.9.5"
 	}
 }
